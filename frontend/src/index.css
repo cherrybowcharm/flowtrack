@@ -1,95 +1,226 @@
-body{
-  background: pink !important
-}
-
-
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --brand: #22c55e;
-    --brand-dim: #16a34a;
+    --brand: #d4526e;
+    --brand-light: #f4a8b8;
+    --brand-dim: #b8385a;
+    --cream: #fdf8f5;
+    --cocoa: #7d4232;
+    /* Vintage border color */
+    --border-warm: rgba(212, 82, 110, 0.18);
+    --border-cream: rgba(156, 103, 70, 0.2);
   }
 
-  * { box-sizing: border-box; }
+  * {
+    box-sizing: border-box;
+  }
 
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-surface-50 text-slate-800 font-sans antialiased;
-    @apply dark:bg-surface-950 dark:text-slate-100;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    @apply bg-surface-50 text-cocoa-900 font-sans antialiased;
+    @apply dark:bg-surface-950 dark:text-cream-200;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
-  /* Custom scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-transparent; }
-  ::-webkit-scrollbar-thumb { @apply bg-slate-300 dark:bg-slate-600 rounded-full; }
-  ::-webkit-scrollbar-thumb:hover { @apply bg-slate-400 dark:bg-slate-500; }
+  /* ── Warm scrollbar ────────────────────────────────────────────────── */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(212, 82, 110, 0.25);
+    border-radius: 99px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 82, 110, 0.4);
+  }
+
+  /* ── Selection color ───────────────────────────────────────────────── */
+  ::selection {
+    background: rgba(212, 82, 110, 0.2);
+    color: #7d4232;
+  }
 }
 
 @layer components {
-  /* ── Card ─────────────────────────────────────────────────────────────── */
+
+  /* ═══════════════════════════════════════════════════════════════════
+     CARD
+  ═══════════════════════════════════════════════════════════════════ */
   .card {
-    @apply bg-white dark:bg-surface-900 rounded-2xl border border-slate-200/60 dark:border-slate-700/50 shadow-sm;
+    @apply bg-white dark:bg-surface-900 rounded-2xl border border-petal-200 dark:border-mauve-800/40 shadow-cream-sm dark:shadow-none;
+    background-image: none;
   }
 
-  /* ── Button variants ──────────────────────────────────────────────────── */
+  /* Vintage framed card — optional decorative border inside */
+  .card-framed {
+    @apply card relative;
+  }
+
+  .card-framed::before {
+    content: '';
+    @apply absolute inset-[6px] rounded-xl pointer-events-none;
+    border: 1px solid rgba(212, 82, 110, 0.1);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     BUTTONS
+  ═══════════════════════════════════════════════════════════════════ */
   .btn {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer;
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-sans font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer;
   }
+
   .btn-primary {
-    @apply btn bg-brand-500 hover:bg-brand-600 active:scale-95 text-white shadow-sm shadow-brand-500/20;
+    @apply btn bg-brand-500 hover:bg-brand-600 active:scale-95 text-white shadow-rose-sm hover:shadow-rose-md;
   }
+
   .btn-secondary {
-    @apply btn bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200;
+    @apply btn bg-petal-100 hover:bg-petal-200 dark:bg-mauve-800 dark:hover:bg-mauve-700 text-brand-700 dark:text-petal-300 border border-petal-300 dark:border-mauve-600/60;
   }
+
   .btn-ghost {
-    @apply btn hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400;
+    @apply btn hover:bg-petal-100 dark:hover:bg-mauve-800/60 text-cocoa-600 dark:text-petal-400;
   }
+
   .btn-danger {
-    @apply btn bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400;
+    @apply btn bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/35 text-red-600 dark:text-red-400 border border-red-200/60 dark:border-red-800/30;
   }
 
-  /* ── Input ────────────────────────────────────────────────────────────── */
+  /* ═══════════════════════════════════════════════════════════════════
+     INPUT
+  ═══════════════════════════════════════════════════════════════════ */
   .input {
-    @apply w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700
-           bg-white dark:bg-surface-900 text-slate-800 dark:text-slate-100
-           placeholder-slate-400 dark:placeholder-slate-500
-           focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-400
-           transition-all duration-150 text-sm;
+    @apply w-full px-3.5 py-2.5 rounded-xl border border-petal-300 dark:border-mauve-700/60 bg-cream-50 dark:bg-mauve-900/50 text-cocoa-800 dark:text-cream-200 placeholder-petal-400 dark:placeholder-mauve-500 focus:outline-none focus:ring-2 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-150 text-sm shadow-inner-rose dark:shadow-none;
   }
 
-  /* ── Badge ────────────────────────────────────────────────────────────── */
+  /* ═══════════════════════════════════════════════════════════════════
+     BADGE
+  ═══════════════════════════════════════════════════════════════════ */
   .badge {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-medium;
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide;
   }
 
-  /* ── Page wrapper ─────────────────────────────────────────────────────── */
+  /* ═══════════════════════════════════════════════════════════════════
+     PAGE WRAPPER
+  ═══════════════════════════════════════════════════════════════════ */
   .page {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
   }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     DIVIDER — thin warm line
+  ═══════════════════════════════════════════════════════════════════ */
+  .divider {
+    @apply border-t border-petal-200 dark:border-mauve-800/50;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     VINTAGE SECTION LABEL
+  ═══════════════════════════════════════════════════════════════════ */
+  .section-label {
+    @apply text-xs font-semibold uppercase tracking-[0.12em] text-brand-400 dark:text-brand-400/80;
+  }
 }
 
-/* ── Timer pulse ring ─────────────────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════════════════
+   TIMER PULSE RING — rose-themed
+════════════════════════════════════════════════════════════════════════ */
 .timer-ring {
-  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 0 0 rgba(212, 82, 110, 0.45);
   animation: timerPulse 2s infinite;
 }
+
 @keyframes timerPulse {
-  0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-  70%  { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(212, 82, 110, 0.45);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(212, 82, 110, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(212, 82, 110, 0);
+  }
 }
 
-/* ── Staggered animation helpers ──────────────────────────────────────────── */
-.stagger-1 { animation-delay: 0.05s; }
-.stagger-2 { animation-delay: 0.10s; }
-.stagger-3 { animation-delay: 0.15s; }
-.stagger-4 { animation-delay: 0.20s; }
-.stagger-5 { animation-delay: 0.25s; }
+/* ════════════════════════════════════════════════════════════════════════
+   STAGGER ANIMATION HELPERS
+════════════════════════════════════════════════════════════════════════ */
+.stagger-1 {
+  animation-delay: 0.05s;
+}
+
+.stagger-2 {
+  animation-delay: 0.10s;
+}
+
+.stagger-3 {
+  animation-delay: 0.15s;
+}
+
+.stagger-4 {
+  animation-delay: 0.20s;
+}
+
+.stagger-5 {
+  animation-delay: 0.25s;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   VINTAGE ORNAMENT — decorative divider used in login/cards
+════════════════════════════════════════════════════════════════════════ */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(212, 82, 110, 0.35);
+  font-size: 14px;
+}
+
+.ornament::before,
+.ornament::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 82, 110, 0.3), transparent);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   SOFT BACKGROUND TEXTURE — subtle dot pattern for surfaces
+════════════════════════════════════════════════════════════════════════ */
+.bg-texture {
+  background-image: radial-gradient(circle, rgba(212, 82, 110, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .bg-texture {
+  background-image: radial-gradient(circle, rgba(212, 82, 110, 0.08) 1px, transparent 1px);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   CHART TOOLTIP OVERRIDES
+════════════════════════════════════════════════════════════════════════ */
+.recharts-tooltip-wrapper {
+  outline: none !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   DARK MODE BODY BACKGROUND — deep warm rose-brown
+════════════════════════════════════════════════════════════════════════ */
+.dark body,
+.dark #root {
+  background-color: #160b12;
+}
