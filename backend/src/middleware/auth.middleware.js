@@ -5,15 +5,25 @@ const logger = require("../utils/logger");
 const auditService = require("../services/audit.service");
 
 /**
- * Protects routes by verifying the JWT from HTTP-only cookie.
- * Attaches the full user object to req.user on success.
+ * Protects routes by verifying JWT.
+ * Reads token from Authorization header (Bearer) first,
+ * then falls back to HTTP-only cookie for backwards compatibility.
+ * Header-based auth works reliably across all cross-domain deployments.
  */
 async function authenticate(req, res, next) {
   try {
-    const token = req.cookies?.token;
+    // Try Authorization header first (production cross-domain)
+    let token = null;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      token = authHeader.substring(7);
+    }
+    // Fall back to cookie (local development)
+    if (!token) {
+      token = req.cookies?.token;
+    }
 
     if (!token) {
-      // Log unauthorized attempts (no token at all)
       logger.warn("Unauthenticated request — no token", {
         path: req.path,
         method: req.method,

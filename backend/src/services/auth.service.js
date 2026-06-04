@@ -18,9 +18,13 @@ function generateToken(userId) {
 function getCookieOptions() {
   const isProd = process.env.NODE_ENV === "production";
   return {
-    httpOnly: true,          // not accessible by JS — prevents XSS token theft
-    secure: isProd,          // HTTPS only in production
-    sameSite: isProd ? "strict" : "lax",
+    httpOnly: true,   // not accessible by JS — prevents XSS token theft
+    secure: isProd,   // HTTPS only in production (required for sameSite: none)
+    // CRITICAL for cross-domain deployment (Vercel frontend → Render backend):
+    // "none" allows the cookie to be sent cross-origin.
+    // "strict" would block it entirely when domains differ.
+    // In development (same localhost origin) we use "lax" which is safer.
+    sameSite: isProd ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
     path: "/",
   };
@@ -82,14 +86,30 @@ async function login({ email, password }) {
   return { user: safeUser, token };
 }
 
-// ─── Set / Clear Cookie ───────────────────────────────────────────────────────
+// ─── Set / Clear Cookie (used in local dev only) ──────────────────────────────
+// In production (cross-domain), the frontend reads the token from the
+// response body and stores it in localStorage, sending it as a Bearer header.
+// The cookie is still set as a convenience for local same-origin development.
 
 function setAuthCookie(res, token) {
-  res.cookie(COOKIE_NAME, token, getCookieOptions());
+  const isProd = process.env.NODE_ENV === "production";
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: "/",
+  });
 }
 
 function clearAuthCookie(res) {
-  res.clearCookie(COOKIE_NAME, { ...getCookieOptions(), maxAge: 0 });
+  const isProd = process.env.NODE_ENV === "production";
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+    path: "/",
+  });
 }
 
 module.exports = { signup, login, setAuthCookie, clearAuthCookie };
